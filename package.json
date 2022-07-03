@@ -1,0 +1,34 @@
+{
+  "name": "wdv3322",
+  "version": "1.0.0",
+  "description": "Modularization NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AzevedoJason-FS/WDV3322.git"
+  },
+  "keywords": [
+    "NodeJs",
+    "API",
+    "Modularization"
+  ],
+  "author": "Jason Azevedo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AzevedoJason-FS/WDV3322/issues"
+  },
+  "homepage": "https://github.com/AzevedoJason-FS/WDV3322#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
