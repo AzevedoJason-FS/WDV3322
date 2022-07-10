@@ -5,40 +5,34 @@ const router = express.Router();
 const User = require("../model/user");
 const {findUser, saveUser} = require('../../db/db');
 
-router.get("/profile", (req,res,next) => {
- res.json({
-    message:"/profile - GET"
- });
+router.get("/profile",(req,res,next) => {
+    res.redirect('/profile')
 });
 
 router.post("/login", (req,res,next) => {
     findUser({email:req.body.email})
         .then(result => {
-            if(result.length > 0){
-                return res.status(409).json({
-                    message: 'User Already Exists'
+            if(result.length === 0){
+                return res.status(401).json({
+                    message: 'No user found with that email'
                 })
             }
-
-
-
-
     bcrypt.compare(req.body.password, req.body.hash, (err, result) => {
         if(err) return res.status(501).json({message: err.message});
 
-        if(result){
-            res.status(200).json({
-                message: "Authorization Successful",
-                result: result,
-            });
-        }
-            else{
-                res.status(401).json({
-                    message: "Authorization Failed",
+            if(result){
+                res.status(200).json({
+                    message: "Authorization Successful | Welcome",
                     result: result,
                 });
             }
-    })
+            else{
+                res.status(401).json({
+                    message: "Authorization Failed | Incorrect Password",
+                    result: result,
+                });
+            }
+        })
     })
 });
 
