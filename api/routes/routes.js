@@ -17,7 +17,7 @@ router.post("/login", (req,res,next) => {
                     message: 'No user found with that email'
                 })
             }
-    bcrypt.compare(req.body.password, req.body.hash, (err, result) => {
+    bcrypt.compare(req.body.password, result.password, (err, result) => {
         if(err) return res.status(501).json({message: err.message});
 
             if(result){
