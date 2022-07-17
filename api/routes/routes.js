@@ -3,10 +3,25 @@ const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const router = express.Router();
 const User = require("../model/user");
+const jwt = require('jsonwebtoken');
 const {findUser, saveUser} = require('../../db/db');
+const user = {};
 
 router.get("/profile",(req,res,next) => {
-    res.redirect('/profile')
+    try{
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.jwt_key);
+    
+        res.status(200).json({
+            message: 'Verified',
+            decoded: decoded,
+        })
+    }
+   catch(error){
+       res.status(401).json({
+           message: 'authorization failed'
+       })
+   }
 });
 
 router.post("/login", (req,res,next) => {
@@ -17,13 +32,18 @@ router.post("/login", (req,res,next) => {
                     message: 'No user found with that email'
                 })
             }
-    bcrypt.compare(req.body.password, result.password, (err, result) => {
+    const email = req.body.email;
+
+    const token = jwt.sign({email:email}, process.env.jwt_key, {expiresIn: '20m'});
+
+    bcrypt.compare(req.body.password, user.password, (err, result) => {
         if(err) return res.status(501).json({message: err.message});
 
             if(result){
                 res.status(200).json({
                     message: "Authorization Successful | Welcome",
                     result: result,
+                    token: token,
                 });
             }
             else{
@@ -50,6 +70,7 @@ router.post("/signup", (req,res,next) => {
                 message: err.message
             })
         }else{
+            user.password = hash;
             const newUser = new User({
                 _id: mongoose.Types.ObjectId(),
                 firstName: req.body.firstName,
@@ -59,7 +80,7 @@ router.post("/signup", (req,res,next) => {
                 state: req.body.state,
                 zip: req.body.zip,
                 email: req.body.email,
-                password: hash,
+                password: user.password,
             })
         
         //Write to Database
