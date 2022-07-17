@@ -33,6 +33,7 @@ router.post("/login", (req,res,next) => {
                 res.status(200).json({
                     message: "Authorization Successful | Welcome",
                     result: result,
+                    email: email,
                     token: token,
                 });
             }
@@ -82,6 +83,7 @@ router.post("/signup", (req,res,next) => {
                 User: {
                     firstName: result.firstName,
                     email: result.email,
+                    password: req.body.password,
                         metadata:{
                             method: req.method,
                             host: req.hostname

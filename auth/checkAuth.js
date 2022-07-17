@@ -10,7 +10,8 @@ module.exports = (req, res, next) => {
     }
     catch(error){
        res.status(401).json({
-           message: 'authorization failed | Expired Token'
+           name: 'TokenExpiredError',
+           message: 'Authorization failed | Expired Token',
        })
     }
 }
