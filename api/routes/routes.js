@@ -5,23 +5,13 @@ const router = express.Router();
 const User = require("../model/user");
 const jwt = require('jsonwebtoken');
 const {findUser, saveUser} = require('../../db/db');
+const checkAuth = require('../../auth/checkAuth');
 const user = {};
 
-router.get("/profile",(req,res,next) => {
-    try{
-        const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.jwt_key);
-    
+router.get("/profile", checkAuth,(req,res,next) => {
         res.status(200).json({
-            message: 'Verified',
-            decoded: decoded,
+            message: req.userData,
         })
-    }
-   catch(error){
-       res.status(401).json({
-           message: 'authorization failed'
-       })
-   }
 });
 
 router.post("/login", (req,res,next) => {
@@ -34,7 +24,7 @@ router.post("/login", (req,res,next) => {
             }
     const email = req.body.email;
 
-    const token = jwt.sign({email:email}, process.env.jwt_key, {expiresIn: '20m'});
+    const token = jwt.sign({email:email}, process.env.jwt_key, {expiresIn: '30s'});
 
     bcrypt.compare(req.body.password, user.password, (err, result) => {
         if(err) return res.status(501).json({message: err.message});
@@ -92,7 +82,6 @@ router.post("/signup", (req,res,next) => {
                 User: {
                     firstName: result.firstName,
                     email: result.email,
-                    password: result.password,
                         metadata:{
                             method: req.method,
                             host: req.hostname
