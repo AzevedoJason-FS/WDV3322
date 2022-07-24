@@ -3,6 +3,9 @@ const morgan = require("morgan");
 const app = express();
 const mongoose = require("mongoose");
 const routes = require('../api/routes/routes')
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
+const options = require('../config/swaggerOptions');
 
 //Middleware for logging
 app.use(morgan("dev"));
@@ -23,6 +26,10 @@ res.status(201).json({
 });
 
 app.use('/users', routes);
+
+const swaggerDocs = swaggerJsDoc(options);
+console.log(swaggerDocs);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 //middleware to handle CORS Policy
 app.use((req, res, next) => {
